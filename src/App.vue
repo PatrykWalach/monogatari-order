@@ -5,7 +5,7 @@
         <ErrorWrapper v-if="error">
           <ErrorFetch :message="error.message" :refetch="refetch" />
         </ErrorWrapper>
-        <TheContainerLoading :ids="SERIES_IDS" v-else-if="loading" />
+        <TheContainerLoading :ids="SORTED_IDS" v-else-if="loading" />
         <TheContainer v-else :media="media" />
       </keep-alive>
     </v-content>
@@ -28,7 +28,7 @@ import {
   TheAppQueryVariables as QueryVariables,
 } from './__generated/TheAppQuery'
 
-const SERIES_IDS = [
+const SORTED_IDS = [
   5081,
   11597,
   15689,
@@ -47,7 +47,7 @@ const SERIES_IDS = [
 const TheAppQuery = gql`
   query TheAppQuery($idIn: [Int]) {
     Page {
-      media(id_in: $idIn, sort: START_DATE) {
+      media(id_in: $idIn, sort: ID) {
         id
         ...TheContainer_media
       }
@@ -71,16 +71,16 @@ export default defineComponent({
       QueryResult,
       QueryVariables
     >(TheAppQuery, {
-      idIn: SERIES_IDS,
+      idIn: SORTED_IDS,
     })
 
     const unsortedMedia = useResult(result, [], data => data.Page.media || [])
 
     const media = computed(() =>
-      SERIES_IDS.map(id => unsortedMedia.value.find(media => media.id === id)),
+      SORTED_IDS.map(id => unsortedMedia.value.find(media => media.id === id)),
     )
 
-    return { media, SERIES_IDS, loading, refetch, error }
+    return { media, SORTED_IDS, loading, refetch, error }
   },
 })
 </script>
