@@ -18,7 +18,7 @@ import TheContainerLoading from './components/TheContainerLoading.vue'
 import ErrorFetch from './components/ErrorFetch.vue'
 import ErrorWrapper from './components/ErrorWrapper.vue'
 
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, computed } from '@vue/composition-api'
 import { useResult, useQuery } from '@vue/apollo-composable'
 import { TheContainerFragments } from './components/TheContainer.vue'
 import { gql } from 'apollo-boost'
@@ -74,7 +74,11 @@ export default defineComponent({
       idIn: SERIES_IDS,
     })
 
-    const media = useResult(result, [], data => data.Page.media || [])
+    const unsortedMedia = useResult(result, [], data => data.Page.media || [])
+
+    const media = computed(() =>
+      SERIES_IDS.map(id => unsortedMedia.value.find(media => media.id === id)),
+    )
 
     return { media, SERIES_IDS, loading, refetch, error }
   },
