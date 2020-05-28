@@ -23,6 +23,11 @@ import { useResult, useQuery } from '@vue/apollo-composable'
 import { TheContainerFragments } from './components/TheContainer.vue'
 import { gql } from 'apollo-boost'
 
+import {
+  TheAppQuery as QueryResult,
+  TheAppQueryVariables as QueryVariables,
+} from './__generated/TheAppQuery'
+
 const SERIES_IDS = [
   5081,
   11597,
@@ -62,7 +67,10 @@ export default defineComponent({
   },
 
   setup() {
-    const { result, loading, refetch, error } = useQuery(TheAppQuery, {
+    const { result, loading, refetch, error } = useQuery<
+      QueryResult,
+      QueryVariables
+    >(TheAppQuery, {
       idIn: SERIES_IDS,
     })
 
