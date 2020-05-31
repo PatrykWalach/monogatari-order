@@ -13,7 +13,7 @@
         color="transparent"
         :href="media.siteUrl"
         target="_blank"
-        rel="nofollow"
+        rel="noreferrer"
       >
         <v-sheet :style="{ overflow: 'hidden' }">
           <MediaCardCover :aspect-ratio="9 / 14" :media="media" />
