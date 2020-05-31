@@ -9,11 +9,13 @@
         <TheContainer v-else :media="media" />
       </keep-alive>
     </v-content>
+    <TheFooter />
   </v-app>
 </template>
 
 <script lang="ts">
 import TheContainer from './components/TheContainer.vue'
+import TheFooter from './components/TheFooter.vue'
 import TheContainerLoading from './components/TheContainerLoading.vue'
 import ErrorFetch from './components/ErrorFetch.vue'
 import ErrorWrapper from './components/ErrorWrapper.vue'
@@ -60,6 +62,7 @@ export default defineComponent({
   name: 'App',
 
   components: {
+    TheFooter,
     TheContainer,
     TheContainerLoading,
     ErrorFetch,
