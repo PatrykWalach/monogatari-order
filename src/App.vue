@@ -5,7 +5,7 @@
         <ErrorWrapper v-if="error">
           <ErrorFetch :message="error.message" :refetch="refetch" />
         </ErrorWrapper>
-        <TheContainerLoading :ids="SORTED_IDS" v-else-if="loading" />
+        <TheContainerLoading :ids="ids" v-else-if="loading" />
         <TheContainer v-else :media="media" />
       </keep-alive>
     </v-content>
@@ -20,7 +20,7 @@ import TheContainerLoading from './components/TheContainerLoading.vue'
 import ErrorFetch from './components/ErrorFetch.vue'
 import ErrorWrapper from './components/ErrorWrapper.vue'
 
-import { defineComponent, computed } from '@vue/composition-api'
+import { defineComponent, computed, ref } from '@vue/composition-api'
 import { useResult, useQuery } from '@vue/apollo-composable'
 import { TheContainerFragments } from './components/TheContainer.vue'
 import { gql } from 'apollo-boost'
@@ -30,22 +30,54 @@ import {
   TheAppQueryVariables as QueryVariables,
 } from './__generated/TheAppQuery'
 
-const SORTED_IDS = [
-  5081,
-  11597,
-  15689,
-  17074,
-  20593,
-  20918,
-  21262,
-  9260,
-  21399,
-  21400,
-  21520,
-  21745,
-  100815,
-]
-
+const ORDERS = {
+  RELEASE: [
+    5081,
+    11597,
+    15689,
+    17074,
+    20593,
+    20918,
+    21262,
+    9260,
+    21399,
+    21400,
+    21520,
+    21745,
+    100815,
+  ],
+  NOVEL: [
+    5081,
+    9260,
+    21399,
+    21400,
+    11597,
+    15689,
+    17074,
+    20593,
+    20918,
+    21520,
+    21262,
+    21745,
+    100815,
+  ],
+  VERTICAL: [
+    9260,
+    21399,
+    21400,
+    5081,
+    11597,
+    15689,
+    17074,
+    20593,
+    20918,
+    21520,
+    21262,
+    21745,
+    100815,
+  ],
+}
+type Order = keyof typeof ORDERS
 const TheAppQuery = gql`
   query TheAppQuery($idIn: [Int]) {
     Page {
@@ -70,20 +102,24 @@ export default defineComponent({
   },
 
   setup() {
+    const activeOrder = ref<Order>('NOVEL')
+
+    const ids = computed(() => ORDERS[activeOrder.value])
+
     const { result, loading, refetch, error } = useQuery<
       QueryResult,
       QueryVariables
     >(TheAppQuery, {
-      idIn: SORTED_IDS,
+      idIn: ids,
     })
 
     const unsortedMedia = useResult(result, [], data => data.Page.media || [])
 
     const media = computed(() =>
-      SORTED_IDS.map(id => unsortedMedia.value.find(media => media.id === id)),
+      ids.value.map(id => unsortedMedia.value.find(media => media.id === id)),
     )
 
-    return { media, SORTED_IDS, loading, refetch, error }
+    return { media, ids, loading, refetch, error }
   },
 })
 </script>
