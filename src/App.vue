@@ -28,7 +28,7 @@ import { gql } from 'apollo-boost'
 import {
   TheAppQuery as QueryResult,
   TheAppQueryVariables as QueryVariables,
-} from './__generated/TheAppQuery'
+} from './__generated__/TheAppQuery'
 
 const ORDERS = {
   RELEASE: [
@@ -110,13 +110,13 @@ export default defineComponent({
       QueryResult,
       QueryVariables
     >(TheAppQuery, {
-      idIn: ids,
+      idIn: ids.value,
     })
 
-    const unsortedMedia = useResult(result, [], data => data.Page.media || [])
+    const unsortedMedia = useResult(result, [], data => data.Page?.media || [])
 
     const media = computed(() =>
-      ids.value.map(id => unsortedMedia.value.find(media => media.id === id)),
+      ids.value.map(id => unsortedMedia.value.find(media => media?.id === id)),
     )
 
     return { media, ids, loading, refetch, error }
